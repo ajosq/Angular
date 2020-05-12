@@ -1,20 +1,143 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-
+<nav>
+    <ul>
+        <li>
+            <a
+                href="javascript:void(0);"
+                [ngClass]="{ active: activeTab === tabs.STATE_WISE }"
+                (click)="setSelection(tabs.STATE_WISE)"
+                >STATEWISE</a
+            >
+        </li>
+        <li>&nbsp;|&nbsp;</li>
+        <li>
+            <a
+                href="javascript:void(0);"
+                [ngClass]="{ active: activeTab === tabs.CASE_TIME_SERIES }"
+                (click)="setSelection(tabs.CASE_TIME_SERIES)"
+                >CASE TIME SERIES</a
+            >
+        </li>
+        <li>&nbsp;|&nbsp;</li>
+        <li>
+            <a
+                href="javascript:void(0);"
+                [ngClass]="{ active: activeTab === tabs.TESTED }"
+                (click)="setSelection(tabs.TESTED)"
+                >TESTED</a
+            >
+        </li>
+        <li>&nbsp;|&nbsp;</li>
+        <li>
+            <a
+                href="javascript:void(0);"
+                [ngClass]="{ active: activeTab === tabs.DISTRICT_WISE }"
+                (click)="setSelection(tabs.DISTRICT_WISE)"
+                >DISTRICT WISE</a
+            >
+        </li>
+    </ul>
+</nav>
+<section id="covid-data-content">
+    <div class="loading" *ngIf="apiStatusText">
+        <h1>{{ apiStatusText }}</h1>
+    </div>
+    <div *ngIf="apiData && !isLoading">
+        <div *ngIf="activeTab === tabs.STATE_WISE" class="state-wise">
+            <table id="page-content">
+                <tr>
+                    <th>State</th>
+                    <th>Confirmed</th>
+                    <th>Active</th>
+                    <th>Recovered</th>
+                    <th>Deaths</th>
+                </tr>
+                <tr *ngFor="let data of apiData">
+                    <td>{{ data?.state }}</td>
+                    <td>{{ data?.confirmed }}</td>
+                    <td>{{ data?.active }}</td>
+                    <td>{{ data?.recovered }}</td>
+                    <td>{{ data?.deaths }}</td>
+                </tr>
+            </table>
+        </div>
+        <div
+            *ngIf="activeTab === tabs.CASE_TIME_SERIES"
+            class="case-time-series"
+        >
+            <table id="page-content">
+                <tr>
+                    <th>Date</th>
+                    <th>Daily Confirmed</th>
+                    <th>Daily Recovered</th>
+                    <th>Daily Deaths</th>
+                    <th>Total Confirmed</th>
+                    <th>Total Recovered</th>
+                    <th>Total Deaths</th>
+                </tr>
+                <tr *ngFor="let data of apiData">
+                    <td>{{ data?.date }}</td>
+                    <td>{{ data?.dailyconfirmed }}</td>
+                    <td>{{ data?.dailyrecovered }}</td>
+                    <td>{{ data?.dailydeceased }}</td>
+                    <td>{{ data?.totalconfirmed }}</td>
+                    <td>{{ data?.totalrecovered }}</td>
+                    <td>{{ data?.totaldeceased }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="activeTab === tabs.TESTED" class="tested">
+            <table id="page-content">
+                <tr>
+                    <th>Updated On</th>
+                    <th>Total Samples Tested</th>
+                    <th>Total Positie Cases</th>
+                    <th>Total Individuals Tested</th>
+                    <th>Tests Per Confirmed Case</th>
+                    <th>Tests Positivity Rate</th>
+                </tr>
+                <tr *ngFor="let data of apiData">
+                    <td>{{ data?.updatetimestamp }}</td>
+                    <td>{{ data?.totalsamplestested }}</td>
+                    <td>{{ data?.totalpositivecases }}</td>
+                    <td>{{ data?.totalindividualstested }}</td>
+                    <td>{{ data?.testsperconfirmedcase }}</td>
+                    <td>{{ data?.testpositivityrate }}</td>
+                </tr>
+            </table>
+        </div>
+        <div *ngIf="activeTab === tabs.DISTRICT_WISE" class="district-wise">
+            <div>
+                <label for="states">Please select a state: </label>
+                <select
+                    class="state-list"
+                    [(ngModel)]="selectedState"
+                    (change)="onStateChange()"
+                    name="states"
+                    id="states"
+                >
+                    <option *ngFor="let data of apiData" [value]="data.state">
+                        {{ data.state }}
+                    </option>
+                    <option value=""> -- Select -- </option>
+                </select>
+            </div>
+            <table *ngIf="selectedState" id="page-content">
+                <tr>
+                    <th>District Name</th>
+                    <th>Confirmed</th>
+                    <th>Active</th>
+                    <th>Recovered</th>
+                    <th>Deceased</th>
+                </tr>
+                <tr *ngFor="let district of stateData.district">
+                    <td>{{ district?.name }}</td>
+                    <td>{{ district?.data.confirmed }}</td>
+                    <td>{{ district?.data.active }}</td>
+                    <td>{{ district?.data.recovered }}</td>
+                    <td>{{ district?.data.deceased }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</section>
+<footer></footer>

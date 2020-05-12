@@ -1,0 +1,67 @@
+nav ul {
+    display: table;
+    padding-left: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+nav li {
+    display: inline;
+    list-style-type: none;
+}
+nav a {
+    color: navy;
+    text-decoration: none;
+}
+nav a:hover {
+    text-shadow: 0 0 15px #0aa02f, 0 0 5px #66ff00;
+}
+
+nav .active {
+    text-shadow: 0 0 15px #0aa02f, 0 0 5px #66ff00;
+}
+
+.loading {
+    color: rgb(136, 133, 133);
+    display: table;
+    margin: auto;
+}
+
+#page-content {
+    font-family: "Roboto";
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#page-content td,
+#page-content th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#page-content tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#page-content tr:hover {
+    background-color: #ddd;
+}
+
+#page-content th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4075b9;
+    color: white;
+}
+
+#covid-data-content {
+    overflow-y: auto;
+    margin: auto;
+    max-width: 80%;
+    max-height: 600px;
+}
+
+.state-list {
+    padding: 5px;
+    margin-bottom: 5px;
+}
